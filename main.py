@@ -5,18 +5,6 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QWidget
 
 
-class Daire1(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
-        uic.loadUi("daire1.ui", self)
-
-        self.countb = self.findChild(QtWidgets.QPushButton, 'countartir')
-        self.countb.clicked.connect(self.countArtir)
-
-    def countArtir(self):
-        print("test")
-
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,7 +80,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time = 0
         self.timeArray.append(self.time)
 
-
     def textleriGuncelle(self):
         self.daire1_0.setText(str(format(self.daire1_enerji_tuketimi[0])))
         self.daire1_1.setText(str(self.daire1_enerji_tuketimi[1]))
@@ -106,7 +93,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_9.setText(str(self.daire1_enerji_tuketimi[9]))
         self.daire1_10.setText(str(self.daire1_enerji_tuketimi[10]))
         self.daire1_11.setText(str(self.daire1_enerji_tuketimi[11]))
-        self.daire1_12.setText(str(format(round(self.daire1_enerji_tuketimi[12], 2)))+" W")
+        self.daire1_12.setText(str(format(round(self.daire1_enerji_tuketimi[12], 2))) + " W")
         self.daire1_13.setText(str(format(round(self.daire1_enerji_tuketimi[13], 2))))
         self.daire1_14.setText(str(self.daire1_enerji_tuketimi[14]))
 
@@ -142,9 +129,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.enerji_temp2 /= 1000
         self.daire1_toplam_enerji.append(self.enerji_temp1)
         self.daire2_toplam_enerji.append(self.enerji_temp2)
-        self.daire1_anlik_enerji.append(self.daire1_toplam_enerji[int(self.time)]-self.daire1_toplam_enerji[int(self.time)-1])
-        self.daire2_anlik_enerji.append(self.daire2_toplam_enerji[int(self.time)]-self.daire2_toplam_enerji[int(self.time)-1])
+        self.daire1_anlik_enerji.append(
+            self.daire1_toplam_enerji[int(self.time)] - self.daire1_toplam_enerji[int(self.time) - 1])
+        self.daire2_anlik_enerji.append(
+            self.daire2_toplam_enerji[int(self.time)] - self.daire2_toplam_enerji[int(self.time) - 1])
         self.timeArray.append(self.time)
+
     def update(self):
         self.time += 1
         # ARDUNIO DAN TIME I OKU VE self.time a setle
@@ -158,11 +148,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph2.plot(self.timeArray, self.daire2_anlik_enerji, pen=(0, 255, 0), name="Green curve")
 
         QtCore.QTimer.singleShot(1000, self.update)
-
-    def testClicked(self):
-        print("test")
-        self.w = Daire1()
-        self.w.show()
 
 
 if __name__ == "__main__":
