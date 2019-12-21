@@ -1,6 +1,8 @@
 import sys
 from PyQt5 import QtWidgets, uic, QtCore
 import numpy as np
+import serial
+import time
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QWidget
 
@@ -27,6 +29,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_12 = self.findChild(QtWidgets.QLabel, 'daire1_12')
         self.daire1_13 = self.findChild(QtWidgets.QLabel, 'daire1_13')
         self.daire1_14 = self.findChild(QtWidgets.QLabel, 'daire1_14')
+        self.daire1_sebeked = self.findChild(QtWidgets.QLabel, 'daire1_sebeke')
+        self.daire1_paneld = self.findChild(QtWidgets.QLabel, 'daire1_panel')
+        self.daire1_faturad = self.findChild(QtWidgets.QLabel, 'daire1_fatura')
 
         self.daire2_0 = self.findChild(QtWidgets.QLabel, 'daire2_0')
         self.daire2_1 = self.findChild(QtWidgets.QLabel, 'daire2_1')
@@ -43,6 +48,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_12 = self.findChild(QtWidgets.QLabel, 'daire2_12')
         self.daire2_13 = self.findChild(QtWidgets.QLabel, 'daire2_13')
         self.daire2_14 = self.findChild(QtWidgets.QLabel, 'daire2_14')
+        self.daire2_sebeked = self.findChild(QtWidgets.QLabel, 'daire2_sebeke')
+        self.daire2_paneld = self.findChild(QtWidgets.QLabel, 'daire2_panel')
+        self.daire2_faturad = self.findChild(QtWidgets.QLabel, 'daire2_fatura')
 
         self.daire1_0.setText('320000 kW')
         self.daire1_senaryo = np.loadtxt("daire1.txt")
@@ -80,6 +88,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time = 0
         self.timeArray.append(self.time)
 
+        self.daire1_sebeke = "0"
+        self.daire1_panel = "0"
+        self.daire2_sebeke = "0"
+        self.daire2_panel = "0"
+        self.daire1_fatura = 0
+        self.daire2_fatura = 0
+
     def textleriGuncelle(self):
         self.daire1_0.setText(str(format(round(self.daire1_enerji_tuketimi[0], 2))) + " W")
         self.daire1_1.setText(str(format(round(self.daire1_enerji_tuketimi[1], 2))) + " W")
@@ -96,6 +111,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_12.setText(str(format(round(self.daire1_enerji_tuketimi[12], 2))) + " W")
         self.daire1_13.setText(str(format(round(self.daire1_enerji_tuketimi[13], 2))) + " W")
         self.daire1_14.setText(str(format(round(self.daire1_enerji_tuketimi[14], 2))) + " W")
+        self.daire1_sebeked.setText(self.daire1_sebeke + " W")
+        self.daire1_paneld.setText(self.daire1_panel + " W")
+        self.daire1_faturad.setText(str(format(round(self.daire1_fatura, 2))) + " ₺")
+
 
         self.daire2_0.setText(str(format(round(self.daire2_enerji_tuketimi[0], 2))) + " W")
         self.daire2_1.setText(str(format(round(self.daire2_enerji_tuketimi[1], 2))) + " W")
@@ -112,14 +131,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_12.setText(str(format(round(self.daire2_enerji_tuketimi[12], 2))) + " W")
         self.daire2_13.setText(str(format(round(self.daire2_enerji_tuketimi[13], 2))) + " W")
         self.daire2_14.setText(str(format(round(self.daire2_enerji_tuketimi[14], 2))) + " W")
+        self.daire2_sebeked.setText(self.daire2_sebeke + " W")
+        self.daire2_paneld.setText(self.daire2_panel + " W")
+        self.daire2_faturad.setText(str(format(round(self.daire2_fatura, 2))) + " ₺")
 
     def guncelle(self):
-        index = int(self.time / 10)
+        index = int(self.time/10)
 
         for i in range(15):
-            if int(self.daire1_senaryo[index][i]) == 1:
+            if int(self.daire1_senaryo[i][index]) == 1:
                 self.daire1_enerji_tuketimi[i] += self.cihazlarin_gucleri[i]
-            if int(self.daire2_senaryo[index][i]) == 1:
+            if int(self.daire2_senaryo[i][index]) == 1:
                 self.daire2_enerji_tuketimi[i] += self.cihazlarin_gucleri[i]
         for i in range(15):
             self.enerji_temp1 += self.daire1_enerji_tuketimi[i]
@@ -136,8 +158,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timeArray.append(self.time)
 
     def update(self):
-        self.time += 1
         # ARDUNIO DAN TIME I OKU VE self.time a setle
+        data = arduino.readline()
+        data = data.decode("utf-8")
+        if data != "":
+            data = data.split('*')
+            self.time = int(data[0])
+            self.daire1_sebeke = data[1]
+            self.daire1_panel = data[2]
+            self.daire2_sebeke = data[3]
+            self.daire2_panel = data[4]
+            self.daire1_fatura = int(self.daire1_sebeke.split('.')[0]) * 0.0004 + int(self.daire1_panel.split('.')[0]) * 0.0002
+            self.daire2_fatura = int(self.daire2_sebeke.split('.')[0]) * 0.0004 + int(self.daire2_panel.split('.')[0]) * 0.0002
         self.guncelle()
         self.textleriGuncelle()
 
@@ -147,10 +179,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph2.plot(self.timeArray, self.daire1_anlik_enerji, pen=(255, 0, 0), clear=True)
         self.graph2.plot(self.timeArray, self.daire2_anlik_enerji, pen=(0, 255, 0), name="Green curve")
 
-        QtCore.QTimer.singleShot(1000, self.update)
+        QtCore.QTimer.singleShot(100, self.update)
 
 
 if __name__ == "__main__":
+
+    arduino = serial.Serial('COM4', 115200, timeout=.1)
+
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
     window.show()
