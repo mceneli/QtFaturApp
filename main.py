@@ -14,6 +14,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph = self.findChild(QtWidgets.QGraphicsView, 'graphicsView')
         self.graph2 = self.findChild(QtWidgets.QGraphicsView, 'graphicsView_2')
 
+        self.start = self.findChild(QtWidgets.QPushButton, 'start')
+        self.pause = self.findChild(QtWidgets.QPushButton, 'pause')
+
         self.daire1_0 = self.findChild(QtWidgets.QLabel, 'daire1_0')
         self.daire1_1 = self.findChild(QtWidgets.QLabel, 'daire1_1')
         self.daire1_2 = self.findChild(QtWidgets.QLabel, 'daire1_2')
@@ -94,6 +97,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_panel = "0"
         self.daire1_fatura = 0
         self.daire2_fatura = 0
+        self.flag = False
+
+        self.start.clicked.connect(self.startF)
+        self.pause.clicked.connect(self.pauseF)
+
+    def startF(self):
+        self.flag = True
+
+    def pauseF(self):
+        self.flag = False
 
     def textleriGuncelle(self):
         self.daire1_0.setText(str(format(round(self.daire1_enerji_tuketimi[0], 2))) + " W")
@@ -115,7 +128,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_paneld.setText(self.daire1_panel + " W")
         self.daire1_faturad.setText(str(format(round(self.daire1_fatura, 2))) + " ₺")
 
-
         self.daire2_0.setText(str(format(round(self.daire2_enerji_tuketimi[0], 2))) + " W")
         self.daire2_1.setText(str(format(round(self.daire2_enerji_tuketimi[1], 2))) + " W")
         self.daire2_2.setText(str(format(round(self.daire2_enerji_tuketimi[2], 2))) + " W")
@@ -136,7 +148,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_faturad.setText(str(format(round(self.daire2_fatura, 2))) + " ₺")
 
     def guncelle(self):
-        index = int(self.time/10)
+        index = int(self.time / 10)
 
         for i in range(15):
             if int(self.daire1_senaryo[i][index]) == 1:
@@ -159,31 +171,41 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update(self):
         # ARDUNIO DAN TIME I OKU VE self.time a setle
-        data = arduino.readline()
-        data = data.decode("utf-8")
-        if data != "":
-            data = data.split('*')
-            self.time = int(data[0])
-            self.daire1_sebeke = data[1]
-            self.daire1_panel = data[2]
-            self.daire2_sebeke = data[3]
-            self.daire2_panel = data[4]
-            self.daire1_fatura = int(self.daire1_sebeke.split('.')[0]) * 0.0004 + int(self.daire1_panel.split('.')[0]) * 0.0002
-            self.daire2_fatura = int(self.daire2_sebeke.split('.')[0]) * 0.0004 + int(self.daire2_panel.split('.')[0]) * 0.0002
-        self.guncelle()
-        self.textleriGuncelle()
 
-        self.graph.plot(self.timeArray, self.daire1_toplam_enerji, pen=(255, 0, 0), clear=True)
-        self.graph.plot(self.timeArray, self.daire2_toplam_enerji, pen=(0, 255, 0), name="Green curve")
+        if(self.flag):
+            data = arduino.readline()
+            data = data.decode("utf-8")
+            if data != "":
+                data = data.split('*')
+                self.time = int(data[0])
+                self.daire1_sebeke = data[1]
+                self.daire1_panel = data[2]
+                self.daire2_sebeke = data[3]
+                self.daire2_panel = data[4]
+                self.daire1_fatura = int(self.daire1_sebeke.split('.')[0]) * 0.0004 + int(
+                    self.daire1_panel.split('.')[0]) * 0.0002
+                self.daire2_fatura = int(self.daire2_sebeke.split('.')[0]) * 0.0004 + int(
+                    self.daire2_panel.split('.')[0]) * 0.0002
+            self.guncelle()
+            self.textleriGuncelle()
 
-        self.graph2.plot(self.timeArray, self.daire1_anlik_enerji, pen=(255, 0, 0), clear=True)
-        self.graph2.plot(self.timeArray, self.daire2_anlik_enerji, pen=(0, 255, 0), name="Green curve")
+            self.graph.plot(self.timeArray, self.daire1_toplam_enerji, pen=(255, 0, 0), clear=True)
+            self.graph.plot(self.timeArray, self.daire2_toplam_enerji, pen=(0, 255, 0), name="Green curve")
 
-        QtCore.QTimer.singleShot(100, self.update)
+            self.graph2.plot(self.timeArray, self.daire1_anlik_enerji, pen=(255, 0, 0), clear=True)
+            self.graph2.plot(self.timeArray, self.daire2_anlik_enerji, pen=(0, 255, 0), name="Green curve")
+
+            QtCore.QTimer.singleShot(1000, self.update)
+        else:
+            self.graph.plot(self.timeArray, self.daire1_toplam_enerji, pen=(255, 0, 0), clear=True)
+            self.graph.plot(self.timeArray, self.daire2_toplam_enerji, pen=(0, 255, 0), name="Green curve")
+
+            self.graph2.plot(self.timeArray, self.daire1_anlik_enerji, pen=(255, 0, 0), clear=True)
+            self.graph2.plot(self.timeArray, self.daire2_anlik_enerji, pen=(0, 255, 0), name="Green curve")
+            QtCore.QTimer.singleShot(1000, self.update)
 
 
 if __name__ == "__main__":
-
     arduino = serial.Serial('COM4', 115200, timeout=.1)
 
     app = QtWidgets.QApplication(sys.argv)
@@ -191,4 +213,3 @@ if __name__ == "__main__":
     window.show()
     window.update()
     app.exec_()
-    print("finished")
