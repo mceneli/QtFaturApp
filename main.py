@@ -15,7 +15,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph2 = self.findChild(QtWidgets.QGraphicsView, 'graphicsView_2')
 
         self.start = self.findChild(QtWidgets.QPushButton, 'start')
-        self.pause = self.findChild(QtWidgets.QPushButton, 'pause')
 
         self.daire1_0 = self.findChild(QtWidgets.QLabel, 'daire1_0')
         self.daire1_1 = self.findChild(QtWidgets.QLabel, 'daire1_1')
@@ -55,7 +54,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_paneld = self.findChild(QtWidgets.QLabel, 'daire2_panel')
         self.daire2_faturad = self.findChild(QtWidgets.QLabel, 'daire2_fatura')
 
-        self.daire1_0.setText('320000 kW')
         self.daire1_senaryo = np.loadtxt("daire1.txt")
         self.daire2_senaryo = np.loadtxt("daire2.txt")
         self.isimler = ["Laptop Computer", "LED TV", "Fridge", "Dishwasher", "Washing Machine", "Heather",
@@ -100,13 +98,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.flag = False
 
         self.start.clicked.connect(self.startF)
-        self.pause.clicked.connect(self.pauseF)
 
     def startF(self):
         self.flag = True
-
-    def pauseF(self):
-        self.flag = False
 
     def textleriGuncelle(self):
         self.daire1_0.setText(str(format(round(self.daire1_enerji_tuketimi[0], 2))) + " W")
@@ -149,6 +143,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def guncelle(self):
         index = int(self.time / 10)
+        if index >= 24:
+            index = 23
+            self.flag = False
 
         for i in range(15):
             if int(self.daire1_senaryo[i][index]) == 1:
@@ -172,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def update(self):
         # ARDUNIO DAN TIME I OKU VE self.time a setle
 
-        if(self.flag):
+        if (self.flag):
             data = arduino.readline()
             data = data.decode("utf-8")
             if data != "":
