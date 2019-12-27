@@ -14,6 +14,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph = self.findChild(QtWidgets.QGraphicsView, 'graphicsView')
         self.graph2 = self.findChild(QtWidgets.QGraphicsView, 'graphicsView_2')
 
+        self.start = self.findChild(QtWidgets.QPushButton, 'start')
+        self.pause = self.findChild(QtWidgets.QPushButton, 'pause')
+
         self.daire1_0 = self.findChild(QtWidgets.QLabel, 'daire1_0')
         self.daire1_1 = self.findChild(QtWidgets.QLabel, 'daire1_1')
         self.daire1_2 = self.findChild(QtWidgets.QLabel, 'daire1_2')
@@ -78,11 +81,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graph.setTitle("Toplam Enerji Tüketimi")
         self.graph.setLabel('left', 'kWatt')
-        self.graph.setLabel('bottom', 'Saniye (10 sn = 1 saat)')
+        self.graph.setLabel('bottom', 'Saniye (5 sn = 1 saat)')
 
         self.graph2.setTitle("Anlık Enerji Tüketimi")
         self.graph2.setLabel('left', 'Watt')
-        self.graph2.setLabel('bottom', 'Saniye (10 sn = 1 saat)')
+        self.graph2.setLabel('bottom', 'Saniye (5 sn = 1 saat)')
 
         self.graph.plotItem.showGrid(True, True, 1.0)
         self.graph2.plotItem.showGrid(True, True, 1.0)
@@ -101,53 +104,64 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_fatura_panel = 0
         self.daire1_co2 = 0
         self.daire2_co2 = 0
+        self.flag = False
+
+        self.start.clicked.connect(self.startF)
+        self.pause.clicked.connect(self.pauseF)
+
+    def startF(self):
+        arduino.write(str.encode('1'))
         self.flag = True
 
+    def pauseF(self):
+        arduino.write(str.encode('0'))
+        self.flag = False
+        
     def textleriGuncelle(self):
-        self.daire1_0.setText(str(format(round(self.daire1_enerji_tuketimi[0], 2))) + " W")
-        self.daire1_1.setText(str(format(round(self.daire1_enerji_tuketimi[1], 2))) + " W")
-        self.daire1_2.setText(str(format(round(self.daire1_enerji_tuketimi[2], 2))) + " W")
-        self.daire1_3.setText(str(format(round(self.daire1_enerji_tuketimi[3], 2))) + " W")
-        self.daire1_4.setText(str(format(round(self.daire1_enerji_tuketimi[4], 2))) + " W")
-        self.daire1_5.setText(str(format(round(self.daire1_enerji_tuketimi[5], 2))) + " W")
-        self.daire1_6.setText(str(format(round(self.daire1_enerji_tuketimi[6], 2))) + " W")
-        self.daire1_7.setText(str(format(round(self.daire1_enerji_tuketimi[7], 2))) + " W")
-        self.daire1_8.setText(str(format(round(self.daire1_enerji_tuketimi[8], 2))) + " W")
-        self.daire1_9.setText(str(format(round(self.daire1_enerji_tuketimi[9], 2))) + " W")
-        self.daire1_10.setText(str(format(round(self.daire1_enerji_tuketimi[10], 2))) + " W")
-        self.daire1_11.setText(str(format(round(self.daire1_enerji_tuketimi[11], 2))) + " W")
-        self.daire1_12.setText(str(format(round(self.daire1_enerji_tuketimi[12], 2))) + " W")
-        self.daire1_13.setText(str(format(round(self.daire1_enerji_tuketimi[13], 2))) + " W")
-        self.daire1_14.setText(str(format(round(self.daire1_enerji_tuketimi[14], 2))) + " W")
-        self.daire1_sebeked.setText(self.daire1_sebeke + " W")
-        self.daire1_paneld.setText(self.daire1_panel + " W")
+        self.daire1_0.setText(str(format(round(self.daire1_enerji_tuketimi[0], 2))) + " Wh")
+        self.daire1_1.setText(str(format(round(self.daire1_enerji_tuketimi[1], 2))) + " Wh")
+        self.daire1_2.setText(str(format(round(self.daire1_enerji_tuketimi[2], 2))) + " Wh")
+        self.daire1_3.setText(str(format(round(self.daire1_enerji_tuketimi[3], 2))) + " Wh")
+        self.daire1_4.setText(str(format(round(self.daire1_enerji_tuketimi[4], 2))) + " Wh")
+        self.daire1_5.setText(str(format(round(self.daire1_enerji_tuketimi[5], 2))) + " Wh")
+        self.daire1_6.setText(str(format(round(self.daire1_enerji_tuketimi[6], 2))) + " Wh")
+        self.daire1_7.setText(str(format(round(self.daire1_enerji_tuketimi[7], 2))) + " Wh")
+        self.daire1_8.setText(str(format(round(self.daire1_enerji_tuketimi[8], 2))) + " Wh")
+        self.daire1_9.setText(str(format(round(self.daire1_enerji_tuketimi[9], 2))) + " Wh")
+        self.daire1_10.setText(str(format(round(self.daire1_enerji_tuketimi[10], 2))) + " Wh")
+        self.daire1_11.setText(str(format(round(self.daire1_enerji_tuketimi[11], 2))) + " Wh")
+        self.daire1_12.setText(str(format(round(self.daire1_enerji_tuketimi[12], 2))) + " Wh")
+        self.daire1_13.setText(str(format(round(self.daire1_enerji_tuketimi[13], 2))) + " Wh")
+        self.daire1_14.setText(str(format(round(self.daire1_enerji_tuketimi[14], 2))) + " Wh")
+        self.daire1_sebeked.setText(self.daire1_sebeke + " Wh")
+        self.daire1_paneld.setText(self.daire1_panel + " Wh")
         self.daire1_faturad.setText(str(format(round(self.daire1_fatura, 2))) + " ₺")
         self.daire1_faturapaneld.setText(str(format(round(self.daire1_fatura_panel, 2))) + " ₺")
         self.daire1_co2d.setText(str(format(round(self.daire1_co2, 4))) + " ton")
 
-        self.daire2_0.setText(str(format(round(self.daire2_enerji_tuketimi[0], 2))) + " W")
-        self.daire2_1.setText(str(format(round(self.daire2_enerji_tuketimi[1], 2))) + " W")
-        self.daire2_2.setText(str(format(round(self.daire2_enerji_tuketimi[2], 2))) + " W")
-        self.daire2_3.setText(str(format(round(self.daire2_enerji_tuketimi[3], 2))) + " W")
-        self.daire2_4.setText(str(format(round(self.daire2_enerji_tuketimi[4], 2))) + " W")
-        self.daire2_5.setText(str(format(round(self.daire2_enerji_tuketimi[5], 2))) + " W")
-        self.daire2_6.setText(str(format(round(self.daire2_enerji_tuketimi[6], 2))) + " W")
-        self.daire2_7.setText(str(format(round(self.daire2_enerji_tuketimi[7], 2))) + " W")
-        self.daire2_8.setText(str(format(round(self.daire2_enerji_tuketimi[8], 2))) + " W")
-        self.daire2_9.setText(str(format(round(self.daire2_enerji_tuketimi[9], 2))) + " W")
-        self.daire2_10.setText(str(format(round(self.daire2_enerji_tuketimi[10], 2))) + " W")
-        self.daire2_11.setText(str(format(round(self.daire2_enerji_tuketimi[11], 2))) + " W")
-        self.daire2_12.setText(str(format(round(self.daire2_enerji_tuketimi[12], 2))) + " W")
-        self.daire2_13.setText(str(format(round(self.daire2_enerji_tuketimi[13], 2))) + " W")
-        self.daire2_14.setText(str(format(round(self.daire2_enerji_tuketimi[14], 2))) + " W")
-        self.daire2_sebeked.setText(self.daire2_sebeke + " W")
-        self.daire2_paneld.setText(self.daire2_panel + " W")
+        self.daire2_0.setText(str(format(round(self.daire2_enerji_tuketimi[0], 2))) + " Wh")
+        self.daire2_1.setText(str(format(round(self.daire2_enerji_tuketimi[1], 2))) + " Wh")
+        self.daire2_2.setText(str(format(round(self.daire2_enerji_tuketimi[2], 2))) + " Wh")
+        self.daire2_3.setText(str(format(round(self.daire2_enerji_tuketimi[3], 2))) + " Wh")
+        self.daire2_4.setText(str(format(round(self.daire2_enerji_tuketimi[4], 2))) + " Wh")
+        self.daire2_5.setText(str(format(round(self.daire2_enerji_tuketimi[5], 2))) + " Wh")
+        self.daire2_6.setText(str(format(round(self.daire2_enerji_tuketimi[6], 2))) + " Wh")
+        self.daire2_7.setText(str(format(round(self.daire2_enerji_tuketimi[7], 2))) + " Wh")
+        self.daire2_8.setText(str(format(round(self.daire2_enerji_tuketimi[8], 2))) + " Wh")
+        self.daire2_9.setText(str(format(round(self.daire2_enerji_tuketimi[9], 2))) + " Wh")
+        self.daire2_10.setText(str(format(round(self.daire2_enerji_tuketimi[10], 2))) + " Wh")
+        self.daire2_11.setText(str(format(round(self.daire2_enerji_tuketimi[11], 2))) + " Wh")
+        self.daire2_12.setText(str(format(round(self.daire2_enerji_tuketimi[12], 2))) + " Wh")
+        self.daire2_13.setText(str(format(round(self.daire2_enerji_tuketimi[13], 2))) + " Wh")
+        self.daire2_14.setText(str(format(round(self.daire2_enerji_tuketimi[14], 2))) + " Wh")
+        self.daire2_sebeked.setText(self.daire2_sebeke + " Wh")
+        self.daire2_paneld.setText(self.daire2_panel + " Wh")
         self.daire2_faturad.setText(str(format(round(self.daire2_fatura, 2))) + " ₺")
         self.daire2_faturapaneld.setText(str(format(round(self.daire2_fatura_panel, 2))) + " ₺")
         self.daire2_co2d.setText(str(format(round(self.daire2_co2, 4))) + " ton")
 
     def guncelle(self):
-        index = int(self.time / 10)
+        index = int(self.time / 5)
         if index >= 24:
             index = 23
             self.flag = False
@@ -172,8 +186,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timeArray.append(self.time)
 
     def update(self):
-        # ARDUNIO DAN TIME I OKU VE self.time a setle
-
         if (self.flag):
             data = arduino.readline()
             data = data.decode("utf-8")
