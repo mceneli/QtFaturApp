@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>1266</width>
-    <height>898</height>
+    <height>874</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>1266</width>
-    <height>898</height>
+    <height>820</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>1266</width>
-    <height>898</height>
+    <height>1000</height>
    </size>
   </property>
   <property name="font">
@@ -1328,7 +1328,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Fatura : </string>
+     <string>Fatura(ŞEBEKE) : </string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1349,7 +1349,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Fatura : </string>
+     <string>Fatura(ŞEBEKE) : </string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1531,13 +1531,13 @@
      <string>Kırmızı = Daire1 | Yeşil = Daire2</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="start">
+   <widget class="QLabel" name="label_41">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>790</y>
-      <width>111</width>
-      <height>41</height>
+      <x>560</x>
+      <y>830</y>
+      <width>181</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -1546,11 +1546,148 @@
      </font>
     </property>
     <property name="text">
-     <string>START</string>
+     <string>CO2 : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="daire1_co2">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>830</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="daire2_co2">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>830</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_42">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>830</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CO2 : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelasd">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>790</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Fatura(PANEL) : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="daire1_fatura_panel">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>790</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelxyz">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>790</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Fatura(PANEL) : </string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="daire2_fatura_panel">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>790</y>
+      <width>161</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>-</string>
     </property>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
   <customwidget>

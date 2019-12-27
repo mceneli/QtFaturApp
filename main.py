@@ -14,8 +14,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph = self.findChild(QtWidgets.QGraphicsView, 'graphicsView')
         self.graph2 = self.findChild(QtWidgets.QGraphicsView, 'graphicsView_2')
 
-        self.start = self.findChild(QtWidgets.QPushButton, 'start')
-
         self.daire1_0 = self.findChild(QtWidgets.QLabel, 'daire1_0')
         self.daire1_1 = self.findChild(QtWidgets.QLabel, 'daire1_1')
         self.daire1_2 = self.findChild(QtWidgets.QLabel, 'daire1_2')
@@ -34,6 +32,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_sebeked = self.findChild(QtWidgets.QLabel, 'daire1_sebeke')
         self.daire1_paneld = self.findChild(QtWidgets.QLabel, 'daire1_panel')
         self.daire1_faturad = self.findChild(QtWidgets.QLabel, 'daire1_fatura')
+        self.daire1_faturapaneld = self.findChild(QtWidgets.QLabel, 'daire1_fatura_panel')
+        self.daire1_co2d = self.findChild(QtWidgets.QLabel, 'daire1_co2')
 
         self.daire2_0 = self.findChild(QtWidgets.QLabel, 'daire2_0')
         self.daire2_1 = self.findChild(QtWidgets.QLabel, 'daire2_1')
@@ -53,6 +53,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_sebeked = self.findChild(QtWidgets.QLabel, 'daire2_sebeke')
         self.daire2_paneld = self.findChild(QtWidgets.QLabel, 'daire2_panel')
         self.daire2_faturad = self.findChild(QtWidgets.QLabel, 'daire2_fatura')
+        self.daire2_faturapaneld = self.findChild(QtWidgets.QLabel, 'daire2_fatura_panel')
+        self.daire2_co2d = self.findChild(QtWidgets.QLabel, 'daire2_co2')
 
         self.daire1_senaryo = np.loadtxt("daire1.txt")
         self.daire2_senaryo = np.loadtxt("daire2.txt")
@@ -95,11 +97,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_panel = "0"
         self.daire1_fatura = 0
         self.daire2_fatura = 0
-        self.flag = False
-
-        self.start.clicked.connect(self.startF)
-
-    def startF(self):
+        self.daire1_fatura_panel = 0
+        self.daire2_fatura_panel = 0
+        self.daire1_co2 = 0
+        self.daire2_co2 = 0
         self.flag = True
 
     def textleriGuncelle(self):
@@ -121,6 +122,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire1_sebeked.setText(self.daire1_sebeke + " W")
         self.daire1_paneld.setText(self.daire1_panel + " W")
         self.daire1_faturad.setText(str(format(round(self.daire1_fatura, 2))) + " ₺")
+        self.daire1_faturapaneld.setText(str(format(round(self.daire1_fatura_panel, 2))) + " ₺")
+        self.daire1_co2d.setText(str(format(round(self.daire1_co2, 4))) + " ton")
 
         self.daire2_0.setText(str(format(round(self.daire2_enerji_tuketimi[0], 2))) + " W")
         self.daire2_1.setText(str(format(round(self.daire2_enerji_tuketimi[1], 2))) + " W")
@@ -140,6 +143,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.daire2_sebeked.setText(self.daire2_sebeke + " W")
         self.daire2_paneld.setText(self.daire2_panel + " W")
         self.daire2_faturad.setText(str(format(round(self.daire2_fatura, 2))) + " ₺")
+        self.daire2_faturapaneld.setText(str(format(round(self.daire2_fatura_panel, 2))) + " ₺")
+        self.daire2_co2d.setText(str(format(round(self.daire2_co2, 4))) + " ton")
 
     def guncelle(self):
         index = int(self.time / 10)
@@ -179,10 +184,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.daire1_panel = data[2]
                 self.daire2_sebeke = data[3]
                 self.daire2_panel = data[4]
-                self.daire1_fatura = int(self.daire1_sebeke.split('.')[0]) * 0.0004 + int(
-                    self.daire1_panel.split('.')[0]) * 0.0002
-                self.daire2_fatura = int(self.daire2_sebeke.split('.')[0]) * 0.0004 + int(
-                    self.daire2_panel.split('.')[0]) * 0.0002
+                self.daire1_fatura = int(self.daire1_sebeke.split('.')[0]) * 0.00004
+                self.daire1_fatura_panel = int(self.daire1_panel.split('.')[0]) * 0.00002
+                self.daire2_fatura = int(self.daire2_sebeke.split('.')[0]) * 0.00004
+                self.daire2_fatura_panel = int(self.daire2_panel.split('.')[0]) * 0.00002
+                self.daire1_co2 = int(self.daire1_sebeke.split('.')[0]) * 0.0000004722 + int(self.daire1_panel.split('.')[0]) * 0.0000002361
+                self.daire2_co2 = int(self.daire2_sebeke.split('.')[0]) * 0.0000004722 + int(self.daire2_panel.split('.')[0]) * 0.0000002361
             self.guncelle()
             self.textleriGuncelle()
 
@@ -203,7 +210,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    arduino = serial.Serial('COM4', 115200, timeout=.1)
+    arduino = serial.Serial('COM5', 115200, timeout=.1)
 
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
